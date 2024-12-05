@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon UNA - Previously Asked Questions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Amazon UNA</h1>
+        <p>Previously Asked Questions.</p>
+        <nav>
+            <a href="/">Home</a> | <a href="/history">Past Questions</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="history-list">
+            {% if history %}
+                <ul>
+                    {% for record in history %}
+                        <li>
+                            <div class="question-answer">
+                                <strong>Question:</strong> {{ record.question }}<br>
+                                <strong>Answer:</strong> {{ record.answer }}<br>
+                                <em>Product:</em> {{ record.product_title }}<br>
+                                <small>{{ record.timestamp.strftime('%Y-%m-%d %H:%M:%S') if 'timestamp' in record else 'No timestamp available' }}</small>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No history available.</p>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Amazon UNA powered by RapidAPI. All rights reserved.</p>
+    </footer>
+</body>
+</html>

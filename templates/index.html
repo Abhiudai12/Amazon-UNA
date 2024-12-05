@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon UNA - Decide what to buy with ease.</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Amazon UNA</h1>
+        <p>decide what to buy with ease...</p>
+        <nav>
+            <a href="/">Home</a> | <a href="/history">Past Questions</a>
+        </nav>
+    </header>    
+    <main>
+        <form action="/analyze" method="post">
+            <label for="asin">Amazon ASIN:</label>
+            <input type="text" id="asin" name="asin" placeholder="Enter ASIN" required>
+
+            <label for="question">Your Question:</label>
+            <input type="text" id="question" name="question" placeholder="Ask about the product" required>
+
+            <input type="submit" value="Analyze">
+        </form>
+
+        {% if error %}
+            <p class="error">Error: {{ error }}</p>
+        {% endif %}
+
+        {% if product_info %}
+            <section class="results">
+                <div class="product-info">
+                    <h2>Product Information</h2>
+                    <p><strong>Title:</strong> {{ product_info.title }}</p>
+                    <p><strong>Price:</strong> {{ product_info.price }}</p>
+                    <p><strong>Rating:</strong> {{ product_info.rating }} ({{ product_info.reviews_count }} reviews)</p>
+                    <p><strong>Description:</strong> {{ product_info.description }}</p>
+                </div>
+
+                <div class="sentiment-summary">
+                    <h2>Sentiment Summary</h2>
+                    <p><strong>Positive:</strong> {{ sentiment_summary.positive }}</p>
+                    <p><strong>Negative:</strong> {{ sentiment_summary.negative }}</p>
+                    <p><strong>Neutral:</strong> {{ sentiment_summary.neutral }}</p>
+                </div>
+
+                <div class="question-answer">
+                    <h2>Question Answer</h2>
+                    <p>{{ combined_answer }}</p>
+                </div>
+
+                <div class="visualizations">
+                    <h2>Sentiment Plot</h2>
+                    <img src="{{ sentiment_plot }}" alt="Sentiment Plot">
+
+                    <h2>Word Heatmap</h2>
+                    <img src="{{ heatmap }}" alt="Word Heatmap">
+                </div>
+            </section>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Amazon UNA powered by RapidAPI. All rights reserved.</p>
+    </footer>
+</body>
+</html>

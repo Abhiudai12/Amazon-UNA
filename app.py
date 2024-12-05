@@ -1,4 +1,6 @@
 from flask import Flask, request, render_template
+from pyngrok import ngrok
+from pyngrok.exception import PyngrokNgrokError
 import os
 from model import ProductAnalyzer
 from dotenv import load_dotenv
@@ -7,15 +9,19 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from wordcloud import STOPWORDS
 from collections import Counter
-
 from pymongo import MongoClient
 
 load_dotenv()
 
+NGROK_KEY = os.getenv("NGROK_KEY")
 API_KEY = os.getenv("API_KEY")
+MONGO_URI = os.getenv("MONGO_URI")
+
+#Ngrok Authentication
+ngrok.set_auth_token(NGROK_KEY)
+
 
 # MongoDB setup
-MONGO_URI = os.getenv("MONGO_URI")
 client = MongoClient(MONGO_URI)
 
 # Access the database and the collection
@@ -76,7 +82,6 @@ def analyze():
     except Exception as e:
         print(f"Error inserting data into MongoDB: {e}")
 
-
     # Step 4: Generate plots
     create_sentiment_plot(sentiment_data)
     create_word_heatmap(product_info['reviews'])
@@ -104,7 +109,6 @@ def history():
     # Fetch all questions and answers from MongoDB
     history = list(history_collection.find().sort("timestamp", -1))  # Sort by timestamp (most recent first)
     return render_template('history.html', history=history)
-
 
 def create_sentiment_plot(sentiment_data):
     """Create a bar plot for sentiment confidence scores."""
@@ -146,4 +150,13 @@ def create_word_heatmap(reviews):
     plt.close()
 
 if __name__ == "__main__":
+    try:
+        # Set up ngrok tunnel
+        public_url = ngrok.connect(5000)
+        print(f"ngrok tunnel URL: {public_url}")
+    except PyngrokNgrokError as e:
+        print(f"Error with ngrok: {e}")
+        print("Ensure no other ngrok sessions are active or check your ngrok configuration.")
+
+    # Run the Flask app
     app.run(debug=True)

@@ -1,16 +1,8 @@
-import numpy as np # linear algebra
-import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
-from typing import List, Dict, Optional  # Add Optional import here
+from typing import List, Dict, Optional
 from transformers import pipeline, BertForQuestionAnswering, BertTokenizerFast, T5Tokenizer, T5ForConditionalGeneration
 import requests
 import re
 import torch
-
-
-import os
-for dirname, _, filenames in os.walk('/kaggle/input'):
-    for filename in filenames:
-        print(os.path.join(dirname, filename))
 
 class ProductAnalyzer:
     def __init__(self):
@@ -301,27 +293,3 @@ class ProductAnalyzer:
             # Generate context-aware response using the combined answer
             response = self.generate_context_aware_response(question, combined_answer, sentiment)
             print(f"\nFinal Response: {response}")
-
-def main():
-    analyzer = ProductAnalyzer()
-
-    results = analyzer.analyze_product(asin, question, api_key)
-
-    if "error" in results:
-        print(f"Error: {results['error']}")
-        return
-
-    print("\nProduct Analysis:")
-    print("-" * 50)
-    print(f"Product: {results['product_info']['title']}")
-    print(f"Price: {results['product_info']['price']}")
-    print(f"Rating: {results['product_info']['rating']} ({results['product_info']['reviews_count']} reviews)")
-
-    print("\nSentiment-Aware Combined Response:")
-    print(results['combined_answer']['context_aware'])
-
-    print("\nRaw Combined Answer:")
-    print(results['combined_answer']['raw'])
-
-if __name__ == "__main__":
-    main()

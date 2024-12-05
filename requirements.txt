@@ -10,3 +10,4 @@ python-dotenv
 pymongo
 seaborn
 flask
+sentencepiece

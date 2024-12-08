@@ -9,3 +9,4 @@ wordcloud
 transformers
 torch
 requests
+senetencepiece

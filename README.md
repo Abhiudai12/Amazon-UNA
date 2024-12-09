@@ -1,6 +1,6 @@
 ## About the project
 Amazon UNA - Basic Product Analysis Web App\
-Based on BERT and FLAN ANswering Model\
+Based on BERT and FLAN Answering Model\
 Techologies Used : Rapid API and ngrok
 
 ## Steps to Run

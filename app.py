@@ -17,55 +17,44 @@ NGROK_KEY = os.getenv("NGROK_KEY")
 API_KEY = os.getenv("API_KEY")
 MONGO_URI = os.getenv("MONGO_URI")
 
-#Ngrok Authentication
 ngrok.set_auth_token(NGROK_KEY)
 
-
-# MongoDB setup
 client = MongoClient(MONGO_URI)
 
-# Access the database and the collection
-db = client['product_analyzer']  # The name of the database
-history_collection = db['question_answers']  # The collection to store questions and answers
+db = client['product_analyzer']  
+history_collection = db['question_answers']  
 
-# Update existing records to add a timestamp if missing
 db.question_answers.update_many(
-    {"timestamp": {"$exists": False}},  # Find records without a timestamp
-    {"$set": {"timestamp": pd.Timestamp.now()}}  # Add the current timestamp to those records
+    {"timestamp": {"$exists": False}},  
+    {"$set": {"timestamp": pd.Timestamp.now()}}  
 )
 
 app = Flask(__name__)
 analyzer = ProductAnalyzer()
 
-# Directory to save plots
 PLOT_DIR = "static/plots"
 os.makedirs(PLOT_DIR, exist_ok=True)
 
 @app.route('/')
 def home():
-    """Render the home page with input form."""
     return render_template('index.html')
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
-    """Analyze the product based on ASIN and user-provided question."""
     asin = request.form['asin']
     question = request.form['question']
     api_key = API_KEY
 
-    # Step 1: Fetch product information
     product_info = analyzer.get_product_info(asin, api_key)
     if not product_info:
         error_message = "Failed to retrieve product information. Check ASIN or API key."
         return render_template('index.html', error=error_message)
 
-    # Step 2: Perform sentiment analysis on reviews
     sentiment_data = []
     for review in product_info['reviews']:
         sentiment = analyzer.analyze_sentiment(review)
         sentiment_data.append(sentiment)
 
-    # Step 3: Answer user question
     bert_answer = analyzer.get_bert_answer(question, product_info['analysis_text'])
     flan_answer = analyzer.get_flan_answer(question, product_info['analysis_text'])
     combined_answer = analyzer.combine_answers(bert_answer, flan_answer)
@@ -76,24 +65,21 @@ def analyze():
             "question": question,
             "answer": combined_answer,
             "product_title": product_info['title'],
-            "timestamp": pd.Timestamp.now()  # Ensure the timestamp is added
+            "timestamp": pd.Timestamp.now()  
         })
         print("Data inserted successfully into MongoDB.")
     except Exception as e:
         print(f"Error inserting data into MongoDB: {e}")
 
-    # Step 4: Generate plots
     create_sentiment_plot(sentiment_data)
     create_word_heatmap(product_info['reviews'])
 
-    # Step 5: Summarize sentiment results
     sentiment_summary = {
         "positive": sum(1 for s in sentiment_data if s['sentiment'] == 'POSITIVE'),
         "negative": sum(1 for s in sentiment_data if s['sentiment'] == 'NEGATIVE'),
         "neutral": sum(1 for s in sentiment_data if s['sentiment'] == 'NEUTRAL'),
     }
 
-    # Render results to the webpage
     return render_template(
         'index.html',
         product_info=product_info,
@@ -105,9 +91,8 @@ def analyze():
 
 @app.route('/history')
 def history():
-    """Render a page showing all previous questions and answers."""
-    # Fetch all questions and answers from MongoDB
-    history = list(history_collection.find().sort("timestamp", -1))  # Sort by timestamp (most recent first)
+
+    history = list(history_collection.find().sort("timestamp", -1))  
     return render_template('history.html', history=history)
 
 def create_sentiment_plot(sentiment_data):
@@ -128,7 +113,6 @@ def create_sentiment_plot(sentiment_data):
     plt.close()
 
 def create_word_heatmap(reviews):
-    """Create a heatmap for the most common words in reviews."""
     stopwords = set(STOPWORDS)
     word_counts = Counter(
         word.strip('.,!?()[]{}').lower()
@@ -136,7 +120,7 @@ def create_word_heatmap(reviews):
         for word in review.split()
         if word.lower() not in stopwords
     )
-    common_words = word_counts.most_common(20)  # Fetch the 20 most common words
+    common_words = word_counts.most_common(20)  
     words, counts = zip(*common_words)
     heatmap_data = pd.DataFrame({'Word': words, 'Count': counts}).pivot_table(values='Count', index='Word')
 
@@ -151,12 +135,11 @@ def create_word_heatmap(reviews):
 
 if __name__ == "__main__":
     try:
-        # Set up ngrok tunnel
+
         public_url = ngrok.connect(5000)
         print(f"ngrok tunnel URL: {public_url}")
     except PyngrokNgrokError as e:
         print(f"Error with ngrok: {e}")
         print("Ensure no other ngrok sessions are active or check your ngrok configuration.")
 
-    # Run the Flask app
     app.run(debug=True)

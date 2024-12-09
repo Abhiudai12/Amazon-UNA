@@ -6,7 +6,7 @@ import torch
 
 class ProductAnalyzer:
     def __init__(self):
-        # Initialize models
+
         self.sentiment_analyzer = pipeline("sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english")
         self.bert_model_name = 'bert-large-uncased-whole-word-masking-finetuned-squad'
         self.bert_model = BertForQuestionAnswering.from_pretrained(self.bert_model_name)
@@ -15,13 +15,11 @@ class ProductAnalyzer:
         self.flan_model = T5ForConditionalGeneration.from_pretrained("google/flan-t5-base")
 
     def clean_text(self, text: str) -> str:
-        """Clean and normalize text."""
         text = re.sub(r'http\S+|www\S+', '', text)
         text = re.sub(r'\s+', ' ', text).strip()
         return text
 
     def get_product_info(self, asin: str, api_key: str) -> Optional[Dict]:
-        """Fetch high-quality product information and reviews from Amazon API."""
         product_details_url = "https://real-time-amazon-data.p.rapidapi.com/product-details"
         product_reviews_url = "https://real-time-amazon-data.p.rapidapi.com/product-reviews"
 
@@ -31,14 +29,13 @@ class ProductAnalyzer:
         }
 
         try:
-            # Fetch product details
+
             product_response = requests.get(
                 product_details_url,
                 headers=headers,
                 params={"asin": asin, "country": "IN"}
             )
 
-            # Check response status
             if product_response.status_code != 200:
                 print(f"Product details request failed: {product_response.status_code}")
                 print(f"Response: {product_response.text}")
@@ -49,7 +46,6 @@ class ProductAnalyzer:
                 print("No product data returned from API")
                 return None
 
-            # Extract product information
             product_info = {
                 'title': product_data.get('product_title', 'Title not available'),
                 'description': product_data.get('product_description', 'Description not available'),
@@ -61,21 +57,19 @@ class ProductAnalyzer:
                 'dimensions': product_data.get('product_dimensions', 'Dimension data not available')
             }
 
-            # Fetch product reviews
             reviews_response = requests.get(
                 product_reviews_url,
                 headers=headers,
                 params={"asin": asin, "country": "IN"}
             )
 
-            # Initialize reviews_texts to handle cases where no reviews are fetched
             reviews_texts = []
             if reviews_response.status_code == 200:
                 reviews_data = reviews_response.json().get('data', {}).get('reviews', [])
                 if reviews_data:
                     reviews_texts = [
                         review.get('review_comment', 'Review not available')
-                        for review in reviews_data[:10]  # Fetch up to 10 reviews
+                        for review in reviews_data[:10]  
                     ]
                 else:
                     print("No reviews returned from API")
@@ -83,7 +77,6 @@ class ProductAnalyzer:
                 print(f"Product reviews request failed: {reviews_response.status_code}")
                 print(f"Response: {reviews_response.text}")
 
-            # Combine text for sentiment analysis and question answering
             combined_texts = [
                 f"Title: {product_info['title']}",
                 f"Price: {product_info['price']}",
@@ -94,14 +87,11 @@ class ProductAnalyzer:
                 f"Dimensions: {product_info['dimensions']}",
             ]
 
-            # Add reviews to the combined text
             combined_texts += reviews_texts
 
-            # Compress combined text to fit within 512 characters for analysis
             compressed_text = self.compress_to_limit(combined_texts, limit=512)
             product_info['analysis_text'] = self.clean_text(compressed_text)
 
-            # Store reviews for sentiment analysis and visualization
             product_info['reviews'] = reviews_texts
 
             return product_info
@@ -116,9 +106,7 @@ class ProductAnalyzer:
             print(f"Unexpected error fetching product data: {str(e)}")
             return None
 
-
     def analyze_sentiment(self, text: str) -> Dict:
-        """Analyze sentiment of text."""
         try:
             result = self.sentiment_analyzer(text[:512])[0]
             return {
@@ -130,7 +118,6 @@ class ProductAnalyzer:
             return {'sentiment': 'UNKNOWN', 'confidence': 0.0}
 
     def get_bert_answer(self, question: str, context: str) -> str:
-        """Get answer using BERT model."""
         try:
             inputs = self.bert_tokenizer.encode_plus(
                 question,
@@ -163,7 +150,6 @@ class ProductAnalyzer:
             return "Error generating answer"
 
     def get_flan_answer(self, question: str, context: str) -> str:
-        """Get answer using FLAN-T5 model."""
         try:
             input_text = f"question: {question} context: {context}"
             inputs = self.flan_tokenizer(input_text, return_tensors="pt", padding=True, truncation=True)
@@ -178,20 +164,18 @@ class ProductAnalyzer:
             return "Error generating answer"
 
     def compress_to_limit(self, texts: List[str], limit: int = 512) -> str:
-        """Compress and combine multiple texts within a character limit."""
         compressed_text = ""
         for text in texts:
             if len(compressed_text) + len(text) <= limit:
                 compressed_text += f"{text} "
             else:
-                # Truncate the last part if it exceeds the limit
+
                 remaining_space = limit - len(compressed_text)
                 compressed_text += text[:remaining_space]
                 break
         return compressed_text.strip()
 
     def combine_answers(self, bert_answer: str, flan_answer: str) -> str:
-        """Combine answers intelligently, avoiding repetition and irrelevance."""
         if bert_answer.lower() == flan_answer.lower():
             return bert_answer.strip()
         if bert_answer.lower() in flan_answer.lower():
@@ -201,13 +185,11 @@ class ProductAnalyzer:
         return f"{bert_answer.strip()} / {flan_answer.strip()}"
 
     def generate_context_aware_response(self, question: str, answer: str, sentiment_info: Dict) -> str:
-        """Generate a response that considers sentiment context for e-commerce site."""
 
         question_lower = question.lower()
         sentiment = sentiment_info['sentiment']
         confidence = sentiment_info['confidence']
 
-        # Generate a review summary based on sentiment
         review_summary = ""
         if sentiment == 'POSITIVE':
             review_summary = "The customer reviews are overwhelmingly positive, highlighting the product's strengths."
@@ -216,7 +198,6 @@ class ProductAnalyzer:
         else:
             review_summary = "The customer reviews are mixed, with both positive and neutral feedback."
 
-        # Define response templates for different categories of questions
         response_templates = {
             'worth': f"{review_summary} {answer} Additionally, many customers believe this product is a great value for the price.",
             'good': f"{review_summary} {answer} Users generally praise this feature for its quality and functionality.",
@@ -225,7 +206,6 @@ class ProductAnalyzer:
             'default': f"{review_summary} {answer} Thank you."
         }
 
-        # Categorize the question to choose the correct response template
         if any(word in question_lower for word in ['worth', 'buy', 'purchase', 'recommend']):
             category = 'worth'
         elif any(word in question_lower for word in ['good', 'great', 'best', 'quality']):
@@ -241,55 +221,45 @@ class ProductAnalyzer:
         return template.format(answer=answer)
 
     def analyze_product(self, asin: str, api_key: str):
-        """Main product analysis pipeline."""
-        # Fetch product information
+
         product_info = self.get_product_info(asin, api_key)
         if not product_info:
             print("Failed to fetch product information.")
             return
 
-        # Print basic product details
         print(f"Product Title: {product_info['title']}")
         print(f"Product Details: {product_info['details']}")
         print(f"Price: {product_info['price']}")
 
-        # Sentiment Analysis
         total_confidence = 0
         sentiment_count = 0
 
-        # Iterate over reviews and perform sentiment analysis
         for review in product_info['reviews']:
-            sentiment = self.analyze_sentiment(review)  # Perform sentiment analysis on each review
+            sentiment = self.analyze_sentiment(review)  
 
             total_confidence += sentiment['confidence']
             sentiment_count += 1
 
         print("The customer sentiment for this product is ",sentiment['sentiment']," with", end="")
-        # Calculate the average sentiment confidence
+
         if sentiment_count > 0:
             average_confidence = total_confidence / sentiment_count
             print(f"Average Sentiment Confidence: {average_confidence:.2f}")
         else:
             print("No reviews for sentiment analysis.")
 
-
         while True:
             question = input("\nEnter your question about the product (or 'exit' to quit): ").strip()
             if question.lower() == 'exit':
                 break
 
-            # Get answers from BERT and FLAN models
             bert_answer = self.get_bert_answer(question, product_info['analysis_text'])
             flan_answer = self.get_flan_answer(question, product_info['analysis_text'])
 
-            # Combine the answers
             combined_answer = self.combine_answers(bert_answer, flan_answer)
 
-            # Print individual answers and the combined answer (for debugging/insights if needed)
             print(f"BERT Answer: {bert_answer}")
             print(f"FLAN-T5 Answer: {flan_answer}")
 
-
-            # Generate context-aware response using the combined answer
             response = self.generate_context_aware_response(question, combined_answer, sentiment)
             print(f"\nFinal Response: {response}")

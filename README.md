@@ -7,8 +7,8 @@ Techologies Used : Rapid API and ngrok
 
 Step 1 - Create a .env file with the following keys
 
-`API_KEY`- Rapid API Key for Real Time Amazon Data
-`MONGO_URI` - Mongo Server Connection String
+`API_KEY` - Rapid API Key for Real Time Amazon Data\
+`MONGO_URI` - Mongo Server Connection String\
 `NGROK_KEY` - ngrok authentication token
 
 Step 2 - Run this command

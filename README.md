@@ -1,7 +1,9 @@
 ## About the project
-Amazon UNA - Basic Product Analysis Web App\
-Based on BERT and FLAN Answering Model\
-Techologies Used : Rapid API and ngrok
+Amazon UNA - Product Analysis Web App\
+Generates Sentiment based response with high accuracy\
+Based on combined BERT and FLAN Answering Model\
+Incorporated Sentiment analysis as our uniqueness\
+Techologies Used : Rapid API(for fethcing product information from #Amazon) and ngrok(for deployment)
 
 ## Steps to Run
 

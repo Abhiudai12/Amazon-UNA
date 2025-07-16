@@ -1,6 +1,6 @@
 > **Note**: The original repo was created by my teammate, who did frontend part.
 > This fork contains the complete implementation with my updates.
-> Got 'AA' graade from IIIT professors for this project
+> 🏆 **Recognition:** This project received an **AA Grade** from professors at IIIT Nagpur .
 ## About the project
 " Analyzed REALTIME  Amazon Customer Reviews data, made a sentiment based Q & A model with similarity score of 73% ."
 

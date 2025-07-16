@@ -30,7 +30,7 @@ Simmilarity Comparision-
 ![Screenshot 1](images/una1.png) 
 
 
-Positve & Negative Sentiment Captured2-
+Positve & Negative Sentiment Captured-
 
 
 ![Screenshot 2](images/una2.png)

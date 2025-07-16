@@ -24,13 +24,13 @@ Amazon Reviews fetched-
 ![Amazon Reviews fetched](images/Extracted_reviews.jpg)
 
 
-Screenshot 1-
+Simmilarity Comparision-
 
 
 ![Screenshot 1](images/una1.png) 
 
 
-Screenshot 2-
+Positve & Negative Sentiment Captured2-
 
 
 ![Screenshot 2](images/una2.png)

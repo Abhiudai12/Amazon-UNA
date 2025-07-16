@@ -15,9 +15,12 @@ Techologies Used : Rapid API(for fethcing product information from #Amazon) and 
 <pre>  Enter your question about the product (or 'exit' to quit): Is it worth buying?
   BERT Answer: price : 843  FLAN-T5 Answer: Yes 
   Final Response: The customer reviews are overwhelmingly positive, highlighting the product's strengths. price : 843 / Yes Additionally, many customers believe this product is a great value for the price.  </pre>
-### Screenshots
+### Result Screenshots :
+Amazon Reviews fetched-
 ![Amazon Reviews fetched](images/Extracted_reviews.jpg)
-![Screenshot 1](images/una1.png)  
+Screenshot 1-
+![Screenshot 1](images/una1.png) 
+Screenshot 2-
 ![Screenshot 2](images/una2.png)
 
 ## Steps to Run

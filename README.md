@@ -9,7 +9,9 @@ Generates Sentiment based response with high accuracy\
 Based on combined BERT and FLAN Answering Model\
 Incorporated Sentiment analysis as our uniqueness\
 Techologies Used : Rapid API(for fethcing product information from #Amazon) and ngrok(for deployment)
-
+---
+##Model Output :
+<pre> ```txt Enter your question about the product (or 'exit' to quit): Is it worth buying?   BERT Answer: price : 843  FLAN-T5 Answer: Yes  Final Response: The customer reviews are overwhelmingly positive, highlighting the product's strengths. price : 843 / Yes Additionally, many customers believe this product is a great value for the price. ``` </pre>
 ### Screenshots
 ![Screenshot 1](https://github.com/Abhiudai12/Amazon-UNA/raw/main/una1.png)  
 ![Screenshot 2](https://github.com/Abhiudai12/Amazon-UNA/raw/main/una2.png)

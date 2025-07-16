@@ -1,4 +1,6 @@
-> **Note**: This project was fully implemented by me. The original repo was created by my teammate, who did frontend part. This fork contains the complete implementation with my updates.
+> **Note**: This project was fully implemented by me. The original repo was created by my teammate, who did frontend part.
+> This fork contains the complete implementation with my updates.
+> Got AA graade from IIIT professors for this project
 ## About the project
 Amazon UNA - Product Analysis Web App\
 Generates Sentiment based response with high accuracy\

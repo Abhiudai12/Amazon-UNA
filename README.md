@@ -1,7 +1,9 @@
 > **Note**: The original repo was created by my teammate, who did frontend part.
 > This fork contains the complete implementation with my updates.
-> Got AA graade from IIIT professors for this project
+> Got 'AA' graade from IIIT professors for this project
 ## About the project
+" Analyzed REALTIME  Amazon Customer Reviews data, made a sentiment based Q & A model with similarity score of 73% ."
+
 Amazon UNA - Product Analysis Web App\
 Generates Sentiment based response with high accuracy\
 Based on combined BERT and FLAN Answering Model\

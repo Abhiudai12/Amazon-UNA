@@ -1,4 +1,4 @@
-> **Note**: The original repo was created by my teammate, who did frontend part.
+> **Note**: All ML and data science work in this project is done by me. The original repo was created by my teammate, who did frontend part.
 > This fork contains the complete implementation with my updates.
 > 🏆 **Recognition:** This project received an **AA Grade** from professors at IIIT Nagpur .
 ## About the project

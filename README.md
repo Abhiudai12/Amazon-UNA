@@ -1,3 +1,4 @@
+> **Note**: This project was fully implemented by me. The original repo was created by a teammate only for upload purposes. This fork contains the complete implementation with my updates.
 ## About the project
 Amazon UNA - Product Analysis Web App\
 Generates Sentiment based response with high accuracy\

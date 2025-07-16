@@ -12,12 +12,14 @@ Techologies Used : Rapid API(for fethcing product information from #Amazon) and 
 
 --
 ##Model Output :
-<pre> ```txt Enter your question about the product (or 'exit' to quit): Is it worth buying?
+<pre>  Enter your question about the product (or 'exit' to quit): Is it worth buying?
   BERT Answer: price : 843  FLAN-T5 Answer: Yes 
-  Final Response: The customer reviews are overwhelmingly positive, highlighting the product's strengths. price : 843 / Yes Additionally, many customers believe this product is a great value for the price. ``` </pre>
+  Final Response: The customer reviews are overwhelmingly positive, highlighting the product's strengths. price : 843 / Yes Additionally, many customers believe this product is a great value for the price.  </pre>
 ### Screenshots
-![Screenshot 1](https://github.com/Abhiudai12/Amazon-UNA/raw/main/una1.png)  
-![Screenshot 2](https://github.com/Abhiudai12/Amazon-UNA/raw/main/una2.png)
+![Amazon Reviews fetched](images/Extracted_reviews.jpg)
+![Screenshot 1](images/una1.png)  
+![Screenshot 2](images/una2.png)
+
 ## Steps to Run
 
 Step 1 - Create a .env file with the following keys
